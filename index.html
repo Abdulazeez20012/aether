@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHER — Build the Mind. Shape the Character.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0A1A2F',     // Primary
+              parchment: '#F4F1EC', // Secondary
+              green: '#1F6F5B',    // Accent
+              gold: '#C6A25D',     // Action (CTA Only)
+              black: '#111827',
+              slate: '#4B5563',
+              gray: '#D1D5DB',
+              stone: '#E5E7EB'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Libre Baskerville', 'serif'],
+          },
+          spacing: {
+            '18': '4.5rem',
+            '24': '6rem',       // 96px
+            '32': '8rem',       // 128px
+            '16': '4rem',       // 64px
+          },
+          maxWidth: {
+            'layout': '1200px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F4F1EC;
+      color: #111827;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3",
+    "@google/genai": "https://esm.sh/@google/genai@1.35.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
