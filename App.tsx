@@ -6,6 +6,7 @@ import Program from './pages/Program.tsx';
 import Audience from './pages/Audience.tsx';
 import Application from './pages/Application.tsx';
 import Confirmation from './pages/Confirmation.tsx';
+import Admin from './pages/Admin.tsx';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
 import Assistant from './components/Assistant.tsx';
@@ -31,6 +32,7 @@ const App: React.FC = () => {
             <Route path="/audience" element={<Audience />} />
             <Route path="/apply" element={<Application />} />
             <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
         <Assistant />

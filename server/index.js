@@ -45,11 +45,13 @@ KEY FACTS:
 - Target: Disciplined students (15-22) and values-conscious parents.
 - Goal: Build the Mind, Shape the Character.
 - Admission: Selective, application-based.
+- Application URL: /#/apply (Tell users to click 'Apply' in the navigation or visit the application page).
 
 Response Rules:
 - Be concise. 
 - Use clear language.
 - Provide factual information based on the spec.
+- If a user expresses interest, formally invite them to review the Application page.
 - If you don't know something specific, state that it will be shared during the selection process.
 `;
 
@@ -96,6 +98,25 @@ app.post('/api/assistant', async (req, res) => {
     }
 });
 
+// GET endpoint to retrieve applications (Internal/Admin use)
+app.get('/api/applications', (req, res) => {
+    // Simple protection - in a real app use proper auth
+    const adminKey = req.query.key;
+    if (adminKey !== process.env.ADMIN_KEY && process.env.NODE_ENV === 'production') {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        if (fs.existsSync(applicationsFile)) {
+            const data = fs.readFileSync(applicationsFile, 'utf8');
+            return res.json(JSON.parse(data));
+        }
+        res.json([]);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to read applications' });
+    }
+});
+
 // POST endpoint for application submission
 app.post('/api/apply', async (req, res) => {
     try {
@@ -127,7 +148,8 @@ app.post('/api/apply', async (req, res) => {
             },
         });
 
-        const emailHtml = `
+        // Email to Applicant
+        const applicantEmailHtml = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -159,17 +181,38 @@ app.post('/api/apply', async (req, res) => {
       </html>
     `;
 
+        // Email to Admin/Owner
+        const adminEmailHtml = `
+      <h1>New Application Received</h1>
+      <p><strong>Name:</strong> ${formData.fullName}</p>
+      <p><strong>Email:</strong> ${formData.email}</p>
+      <p><strong>Location:</strong> ${formData.location}</p>
+      <p><strong>Motivation:</strong> ${formData.motivation}</p>
+      <p><strong>Submitted At:</strong> ${newApplication.submittedAt}</p>
+      <hr>
+      <p>Check the admin panel or applications.json for full details.</p>
+    `;
+
         try {
+            // Confirm to Applicant
             await transporter.sendMail({
                 from: '"AETHER Admissions" <admissions@aether-program.edu>',
                 to: formData.email,
                 subject: "Dossier Received: AETHER Application",
-                html: emailHtml,
+                html: applicantEmailHtml,
             });
-            console.log('Confirmation email sent to:', formData.email);
+
+            // Notify Admin
+            await transporter.sendMail({
+                from: '"AETHER System" <system@aether-program.edu>',
+                to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
+                subject: `New AETHER Application: ${formData.fullName}`,
+                html: adminEmailHtml,
+            });
+
+            console.log('Emails dispatched.');
         } catch (mailError) {
-            console.warn('Mail delivery failed (likely due to missing SMTP credentials):', mailError.message);
-            // We don't fail the whole request since the data was saved
+            console.warn('Mail delivery failed:', mailError.message);
         }
 
         res.status(201).json({ success: true, message: 'Dossier received and logged.' });
